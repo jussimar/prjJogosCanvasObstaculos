@@ -1,3 +1,11 @@
 canvas{
     background-color: #ccc;
 }
+
+.direcionais button{
+    float: left;
+}
+
+.descer{
+    clear: both;
+}
