@@ -1,28 +1,47 @@
 window.onload = function(){
     iniciarJogo();
-
-    document.querySelector("#direita").addEventListener("click", function(){
+    // ações executadas enquanto é segurado o botão do mouse
+    document.querySelector("#direita").addEventListener("mousedown", function(){
         direita();
     });
 
-    document.querySelector("#esquerda").addEventListener("click", function(){
+    document.querySelector("#esquerda").addEventListener("mousedown", function(){
         esquerda();
     });
 
-    document.querySelector("#subir").addEventListener("click", function(){
+    document.querySelector("#subir").addEventListener("mousedown", function(){
         subir();
     });
 
-    document.querySelector("#descer").addEventListener("click", function(){
+    document.querySelector("#descer").addEventListener("mousedown", function(){
         descer();
+    });
+    // ações executadas quando solta o botão do mouse
+    document.querySelector("#direita").addEventListener("mouseup", function(){
+        frear();
+    });
+
+    document.querySelector("#esquerda").addEventListener("mouseup", function(){
+        frear();
+    });
+
+    document.querySelector("#subir").addEventListener("mouseup", function(){
+        frear();
+    });
+
+    document.querySelector("#descer").addEventListener("mouseup", function(){
+        frear();
     });
 }
 
 var personagemObj;
 
+var obstaculo;
+
 function iniciarJogo(){
     areaJogo.start();
-    personagemObj = new personagem('#f00',10,120,60,60);
+    personagemObj = new componente('#f00',10,120,60,60);
+    obstaculo = new componente('green',300,120,200,10);
 }
 
 let areaJogo = {
@@ -36,10 +55,13 @@ let areaJogo = {
     },
     limpar: function(){
         this.context.clearRect(0,0, this.canvas.width, this.canvas.height);
+    },
+    parar: function(){
+        clearInterval(this.interval);
     }
 }
 
-function personagem(cor, x, y, largura, altura, ){
+function componente(cor, x, y, largura, altura, ){
     this.altura = altura,
     this.largura = largura,
     this.x = x,
@@ -54,13 +76,48 @@ function personagem(cor, x, y, largura, altura, ){
     this.novaPosicao = function(){
         this.x += this.velocidadeX;
         this.y += this.velocidadeY;
+    },
+    this.bater = function(obj){
+        //pegando posição do personagem
+        let esquerda = this.x;
+        let direita = this.x + this.largura;
+        let superior =  this.y;
+        let inferior = this.y + this.altura;
+        //pegando a posição do obstaculo
+        let objEsquerda = obj.x;
+        let objDireita = obj.x + obj.altura;
+        let objSuperior =  this.y;
+        let objInferior = this.y + this.largura;
+        
+        let batida = true;
+
+        if(
+            (inferior < objSuperior) || 
+            (superior > objInferior) || 
+            (direita < objEsquerda) || 
+            (esquerda > objDireita)
+        ){
+            batida = false;
+            
+        }
+
+        return batida;
+
     }
     
 }
 function atualizaAreaJogo(){
-    areaJogo.limpar();
-    personagemObj.novaPosicao();
-    personagemObj.atualiza();
+    if(personagemObj.bater(obstaculo)){
+        areaJogo.parar();
+    }else{
+        areaJogo.limpar();
+        obstaculo.atualiza();
+        personagemObj.novaPosicao();
+        personagemObj.x += personagemObj.velocidadeX;
+        personagemObj.Y += personagemObj.velocidadeY;
+        personagemObj.atualiza();
+    }
+    
 }
 
 function subir(){
@@ -77,4 +134,9 @@ function esquerda(){
 
 function direita(){
     personagemObj.velocidadeX += 1; 
+}
+
+function frear(){
+    personagemObj.velocidadeX = 0;
+    personagemObj.velocidadeY = 0;
 }
