@@ -36,12 +36,14 @@ window.onload = function(){
 
 var personagemObj;
 
-var obstaculo;
+var obstaculo = [];
+
+var pontos;
 
 function iniciarJogo(){
     areaJogo.start();
-    personagemObj = new componente('#f00',10,120,60,60);
-    obstaculo = new componente('green',300,120,200,10);
+    personagemObj = new componente('#f00',10,120,30,30);
+    pontos = new componente('#000',280,40,'Consolas','30px','texto');
 }
 
 let areaJogo = {
@@ -51,6 +53,7 @@ let areaJogo = {
         this.canvas.height = 400,
         this.context = this.canvas.getContext("2d");
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.frame = 0;
         this.intervalo = setInterval(atualizaAreaJogo, 20);
     },
     limpar: function(){
@@ -61,17 +64,34 @@ let areaJogo = {
     }
 }
 
-function componente(cor, x, y, largura, altura, ){
+function contarIntervalos(n){
+    if((areaJogo.frame / n) % 1 == 0){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function componente(cor, x, y, largura, altura, tipo){
+    this.tipo = tipo;
     this.altura = altura,
     this.largura = largura,
     this.x = x,
     this.y = y,
     this.velocidadeX = 0,
     this.velocidadeY = 0,
+    this.texto = 0;
     this.atualiza = function(){
         contexto = areaJogo.context;
-        contexto.fillStyle = cor,
-        contexto.fillRect(this.x, this.y, this.altura, this.largura);
+        if(this.tipo == "texto"){
+            contexto.font = this.altura + " " + this.largura;
+            contexto.fillStyle = cor;
+            contexto.fillText(this.texto, this.x, this.y);
+        }else{
+            contexto.fillStyle = cor,
+            contexto.fillRect(this.x, this.y, this.altura, this.largura);
+        }
+        
     },
     this.novaPosicao = function(){
         this.x += this.velocidadeX;
@@ -86,8 +106,8 @@ function componente(cor, x, y, largura, altura, ){
         //pegando a posição do obstaculo
         let objEsquerda = obj.x;
         let objDireita = obj.x + obj.altura;
-        let objSuperior =  this.y;
-        let objInferior = this.y + this.largura;
+        let objSuperior =  obj.y;
+        let objInferior = obj.y + obj.largura;
         
         let batida = true;
 
@@ -107,16 +127,37 @@ function componente(cor, x, y, largura, altura, ){
     
 }
 function atualizaAreaJogo(){
-    if(personagemObj.bater(obstaculo)){
-        areaJogo.parar();
-    }else{
-        areaJogo.limpar();
-        obstaculo.atualiza();
-        personagemObj.novaPosicao();
-        personagemObj.x += personagemObj.velocidadeX;
-        personagemObj.Y += personagemObj.velocidadeY;
-        personagemObj.atualiza();
+    let x, y;
+
+    for(i = 0; i < obstaculo.length; i++){
+        if(personagemObj.bater(obstaculo[i])){
+            areaJogo.parar();
+            return;
+        }
     }
+
+    areaJogo.limpar();
+    areaJogo.frame += 1;
+    if(areaJogo.frame == 1 || contarIntervalos(150)){
+        x = areaJogo.canvas.width;
+        minAltura = 20;
+        maxAltura = 200;
+        altura = Math.floor(Math.random()*(maxAltura-minAltura+1)+minAltura);
+        minVazio = 50;
+        maxVazio = 200;
+        vazio = Math.floor(Math.random()*(maxVazio-minVazio+1)+minVazio);
+        obstaculo.push(new componente('green',x,0,altura,10));
+        obstaculo.push(new componente('green',x,altura+vazio,x - altura - vazio,10));
+    }
+
+    for(i = 0; i < obstaculo.length;i++){
+        obstaculo[i].x += -1;
+        obstaculo[i].atualiza();
+    }
+    pontos.texto = "Pontos: " + areaJogo.frame;
+    pontos.atualiza();
+    personagemObj.novaPosicao();
+    personagemObj.atualiza();
     
 }
 
