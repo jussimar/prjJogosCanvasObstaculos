@@ -1,11 +1,12 @@
+body{
+    text-align: center;
+}
+
 canvas{
     background-color: #ccc;
 }
 
-.direcionais button{
-    float: left;
-}
-
-.descer{
-    clear: both;
+.painel{
+    width: 600px;
+    height: 400px;
 }

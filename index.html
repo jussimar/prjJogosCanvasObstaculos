@@ -6,23 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jogo Obstaculos</title>
     <script src="js/script.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
     <link rel="stylesheet" href="css/estilos.css">
     
 </head>
 <body>
-    <div>
-        <button id="subir">subir</button>
-    </div>
-    <div class="direcionais">
-        <div>
-            <button id="esquerda">Esquerda</button>
+    <div class="container painel">
+
+        <div class="row">
+            <div class="offset-4 col-4">
+                <button class="btn btn-info btn-block" id="subir">subir</button>
+            </div>
         </div>
-        <div>
-            <button id="direita">Direita</button>
+        <div class="row">
+            <div class="col-4">
+                <button class="btn btn-info btn-block" id="esquerda">Esquerda</button>
+            </div>
+            <div class="offset-4 col-4">
+                <button class="btn btn-info btn-block" id="direita">Direita</button>
+            </div>
         </div>
+        <div class="row">
+            <div class="offset-4 col-4">
+                <button class="btn btn-info btn-block" id="descer">Descer</button>
+            </div>
+        </div>
+        
     </div>
-    <div class="descer">
-        <button id="descer">Descer</button>
-    </div>
+
+    
 </body>
 </html>
